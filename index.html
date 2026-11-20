@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teaching Platform · Prototype</title>
+<style>
+  :root{
+    --bg: var(--card,#ffffff);
+    --fg: var(--foreground,#1a1a1a);
+    --mut: var(--muted-foreground,#6b7280);
+    --ac: var(--accent,#4f46e5);
+    --bd: var(--border,#e5e7eb);
+    --ok:#059669; --warn:#d97706; --miss:#dc2626;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       color:var(--fg); background:transparent; line-height:1.5; font-size:14px;}
+  .top{display:flex; align-items:center; gap:12px; padding:10px 14px; border-bottom:1px solid var(--bd);}
+  .logo{font-weight:700; letter-spacing:.3px;}
+  .logo span{color:var(--ac);}
+  .top .spacer{flex:1;}
+  .role{display:flex; border:1px solid var(--bd); border-radius:999px; overflow:hidden;}
+  .role button{border:0; background:transparent; padding:5px 14px; cursor:pointer; color:var(--mut); font-size:13px;}
+  .role button.on{background:var(--ac); color:#fff;}
+
+  .wrap{max-width:760px; margin:0 auto; padding:18px 16px 40px;}
+
+  .card{background:var(--bg); border:1px solid var(--bd); border-radius:12px; padding:16px; margin-bottom:14px;}
+
+  /* student login */
+  .login{max-width:360px; margin:40px auto; text-align:center;}
+  .login h1{font-size:20px; margin-bottom:4px;}
+  .login p{color:var(--mut); margin-bottom:20px;}
+  .field{display:block; width:100%; padding:10px 12px; border:1px solid var(--bd); border-radius:8px; margin-bottom:10px; font-size:14px;}
+  .btn{display:inline-block; border:0; background:var(--ac); color:#fff; padding:10px 18px; border-radius:8px; font-size:14px; cursor:pointer;}
+  .btn.ghost{background:transparent; color:var(--ac); border:1px solid var(--ac);}
+  .btn.block{width:100%;}
+  .hint{font-size:12px; color:var(--mut); margin-top:14px;}
+  .hint b{color:var(--ac); cursor:pointer;}
+
+  /* dashboard */
+  .greet{font-size:18px; font-weight:700; margin-bottom:2px;}
+  .sub{color:var(--mut); margin-bottom:16px;}
+  .stats{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px;}
+  .stat{background:var(--bg); border:1px solid var(--bd); border-radius:10px; padding:12px; text-align:center;}
+  .stat .n{font-size:22px; font-weight:700;}
+  .stat .l{font-size:12px; color:var(--mut);}
+  .stat .n.ok{color:var(--ok);} .stat .n.warn{color:var(--warn);} .stat .n.miss{color:var(--miss);}
+
+  .ring{width:64px; height:64px; margin:0 auto 8px;}
+  .progbar{height:8px; background:var(--bd); border-radius:99px; overflow:hidden; margin-top:10px;}
+  .progbar i{display:block; height:100%; background:var(--ac); border-radius:99px;}
+
+  h3{font-size:14px; font-weight:700; margin:16px 0 8px;}
+  .row{display:flex; align-items:center; gap:10px; padding:10px; border:1px solid var(--bd); border-radius:10px; margin-bottom:8px;}
+  .row .ico{width:30px; height:30px; border-radius:8px; display:grid; place-items:center; font-size:14px; flex:0 0 auto;}
+  .ico.s{background:#eef2ff; color:var(--ac);}
+  .ico.o{background:#fef3c7; color:var(--warn);}
+  .ico.m{background:#fee2e2; color:var(--miss);}
+  .row .t{flex:1;}
+  .row .t b{display:block; font-size:13px;}
+  .row .t span{color:var(--mut); font-size:12px;}
+  .row .arrow{color:var(--ac); font-weight:700;}
+
+  /* exercise */
+  .ex h2{font-size:16px; margin-bottom:4px;}
+  .ex .tag{display:inline-block; font-size:11px; padding:2px 8px; border-radius:99px; background:#f3f4f6; color:var(--mut); margin-bottom:10px;}
+  .ex p{color:#374151;}
+  textarea.field{min-height:90px; resize:vertical; font-family:inherit;}
+  .fb{display:none; border:1px solid var(--bd); border-radius:10px; padding:12px; margin-top:12px;}
+  .fb.on{display:block;}
+  .fb .who{font-size:11px; color:var(--mut); margin-bottom:4px; text-transform:uppercase; letter-spacing:.5px;}
+  .fb.c{background:#ecfdf5; border-color:#a7f3d0;}
+  .bars{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px;}
+  .bars2{grid-template-columns:1fr 1fr;}
+  .bar .lbl{display:flex; justify-content:space-between; font-size:12px; color:var(--mut); margin-bottom:4px;}
+  .bar.lg .rowbar{height:16px;}
+  .rowbar{height:8px; background:var(--bd); border-radius:99px; overflow:hidden;}
+  .rowbar i{display:block; height:100%; background:var(--ac); border-radius:99px;}
+
+  .crumb{font-size:12px; color:var(--mut); margin-bottom:14px;}
+  .crumb b{color:var(--fg); cursor:pointer;}
+
+  .pagerow{display:flex; align-items:center; gap:10px; padding:10px; border:1px solid var(--bd); border-radius:10px; margin-bottom:8px; cursor:pointer;}
+  .pagerow:hover{border-color:var(--ac);}
+  .pagerow .who{font-weight:600; width:150px; flex:0 0 auto;}
+  .pagerow .small{flex:1;}
+  .wrap2{display:none;}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="logo">Lesson<span>Loop</span></div>
+  <div class="spacer"></div>
+  <div class="role">
+    <button data-role="student" class="on">Student</button>
+    <button data-role="teacher">Teacher</button>
+  </div>
+</div>
+
+<!-- ======== STUDENT ======== -->
+<div class="wrap" id="sLogWrap">
+  <div class="login card">
+    <h1>Welcome back, Alex</h1>
+    <p>Prototype login — enter any code (nothing is stored or collected).</p>
+    <input class="field" id="sCode" placeholder="Your access code" value="alex-123">
+    <button class="btn block" onclick="studentEnter()">Enter classroom</button>
+    <div class="hint">Try it with any code. This is a demo — no real data is recorded. → <b onclick="showRole('teacher')">or see the teacher side</b></div>
+  </div>
+</div>
+
+<div class="wrap" id="sDashWrap" style="display:none">
+  <div class="crumb"><b onclick="studentLogout()">← Log out</b></div>
+  <div class="greet">Hi, Alex 👋</div>
+  <div class="sub">Group: Biology 3 · graded down to 5 teacher-approved feedback</div>
+
+  <div class="stats">
+    <div class="stat"><div class="n ok" id="sDone">6</div><div class="l">completed</div></div>
+    <div class="stat"><div class="n warn" id="sLeft">4</div><div class="l">up next</div></div>
+    <div class="stat"><div class="n miss" id="sMiss">2</div><div class="l">missed</div></div>
+  </div>
+
+  <div class="card">
+    <h3>Overall progress</h3>
+    <div class="progbar"><i style="width:60%"></i></div>
+    <a style="font-size:12px; color:var(--ac)">60% of your assigned work done</a>
+  </div>
+
+  <div class="card">
+    <h3>🤖 What you should do next</h3>
+    <p style="color:var(--mut); font-size:13px; margin-bottom:10px;">The teacher set prerequisites, so the platform points you to the right step — not just the next item on a list.</p>
+    <div class="pagerow" onclick="openNext()">
+      <div class="ico s">📗</div>
+      <div class="t"><b>Lesson: Cell Structure — part 2</b><span>Required before the Chapter 2 exercise · ~20 min</span></div>
+      <div class="arrow">→</div>
+    </div>
+    <div class="pagerow">
+      <div class="ico s">✏️</div>
+      <div class="t"><b>Exercise: Label the cell diagram</b><span>Do after Cell Structure part 2</span></div>
+      <div class="arrow">→</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>⚠️ Missed — needs a quick catch-up</h3>
+    <div class="row"><div class="ico m">⛔</div><div class="t"><b>Quiz: Photosynthesis basics</b><span>Due 5 days ago · reopened until Friday</span></div><div class="arrow">→</div></div>
+    <div class="row"><div class="ico m">⛔</div><div class="t"><b>Lab notes: Osmosis experiment</b><span>Due 2 days ago · marks deducted after 3 days</span></div><div class="arrow">→</div></div>
+  </div>
+</div>
+
+<!-- exercise (student) -->
+<div class="wrap" id="sExWrap" style="display:none">
+  <div class="crumb"><b onclick="goDash()">← Back to my progress</b></div>
+  <div class="card ex">
+    <h2 id="exTitle">Lesson: Cell Structure — part 2</h2>
+    <span class="tag">Biology · Chapter 2 · ~20 min</span>
+    <p>Welcome to the mitochondria. Watch the short video, then answer this question.</p>
+    <br>
+    <p><b>Question:</b> Explain, in your own words, why the mitochondria is called the "powerhouse" of the cell.</p>
+    <textarea class="field" id="exBox" placeholder="Type your answer here…">Mitochondria produce ATP — the energy currency — through cellular respiration, which powers almost everything a cell does.</textarea>
+    <button class="btn block" onclick="submitEx()">Submit for feedback</button>
+    <div class="fb c" id="exFb">
+      <div class="who">Teacher-approved feedback · AI draft</div>
+      <p>Great answer — you nailed the core idea (ATP / energy). Two small things for next time: name <b>cellular respiration</b> explicitly, and mention it happens on the <b>inner membrane</b>. Re-read the diagram and try the next exercise.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ======== TEACHER ======== -->
+<div class="wrap" id="tWrap" style="display:none">
+  <div class="greet">Teacher view</div>
+  <div class="sub">Groups · protocols · progress across all 150 students</div>
+
+  <div class="bars">
+    <div class="bar"><div class="lbl"><span>Group: Biology 3</span><span>42 students</span></div><div class="rowbar"><i style="width:64%"></i></div></div>
+    <div class="bar"><div class="lbl"><span>Group: Biology 4</span><span>38 students</span></div><div class="rowbar"><i style="width:45%; background:var(--warn)"></i></div></div>
+  </div>
+
+  <div class="card">
+    <h3>Students ready to review (flagged submissions)</h3>
+    <div class="pagerow">
+      <div class="who">Amir (Biology 4) </div><div class="small">Submitted "Osmosis experiment" · AI draft ready for approval</div><div class="arrow">→</div>
+    </div>
+    <div class="pagerow">
+      <div class="who">Elsa (Biology 3)</div><div class="small">Submitted "Label the cell diagram" · AI draft ready for approval</div><div class="arrow">→</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🚨 Needs attention (missed + falling behind)</h3>
+    <div class="pagerow">
+      <div class="ico m">⚠️</div><div class="t"><b>Biology 4</b><span>6 students more than 3 items behind</span></div><div class="arrow">→</div>
+    </div>
+    <div class="pagerow">
+      <div class="ico m">⚠️</div><div class="t"><b>Jonas, Maya, Noah</b><span>3 students in Biology 3 missing the prerequisite lesson</span></div><div class="arrow">→</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🧪 Group prototype: Biology 4</h3>
+    <div class="bars2 bars">
+      <div class="bar"> <div class="lbl"><span>Amir</span><span>4/10</span></div><div class="rowbar"><i style="width:40%; background:var(--warn)"></i></div></div>
+      <div class="bar"> <div class="lbl"><span>Lena</span><span>7/10</span></div><div class="rowbar"><i style="width:70%"></i></div></div>
+      <div class="bar"> <div class="lbl"><span>Marcus</span><span>9/10</span></div><div class="rowbar"><i style="width:90%"></i></div></div>
+      <div class="bar"> <div class="lbl"><span>Zahra</span><span>3/10</span></div><div class="rowbar"><i style="width:30%; background:var(--miss)"></i></div></div>
+    </div>
+    <p style="font-size:12px; color:var(--mut)">Each student's record holds only: code, group, and their work/progress. No names, no emails, no analytics.</p>
+  </div>
+</div>
+
+<script>
+  var role='student';
+  function showRole(r){
+    role=r;
+    document.querySelectorAll('.role button').forEach(function(b){b.classList.remove('on');});
+    document.querySelector('.role button[data-role="'+r+'"]').classList.add('on');
+    document.getElementById('sLogWrap').style.display = (r==='student')?'block':'none';
+    document.getElementById('sDashWrap').style.display='none';
+    document.getElementById('sExWrap').style.display='none';
+    document.getElementById('tWrap').style.display = (r==='teacher')?'block':'none';
+  }
+  function studentEnter(){ document.getElementById('sLogWrap').style.display='none'; showChild('sDashWrap'); }
+  function showChild(id){
+    ['sDashWrap','sExWrap'].forEach(function(i){document.getElementById(i).style.display=(i===id)?'block':'none';});
+  }
+  function studentLogout(){ showRole('student'); document.getElementById('sLogWrap').style.display='block'; }
+  function openNext(){ document.getElementById('exTitle').textContent='Lesson: Cell Structure — part 2'; document.getElementById('exFb').classList.remove('on'); showChild('sExWrap'); }
+  function goDash(){ showChild('sDashWrap'); }
+  function submitEx(){
+    var fb=document.getElementById('exFb');
+    fb.classList.add('on');
+  }
+
+  // nobody collects data: silent demo, single bound variable above
+</script>
+</body>
+</html>
